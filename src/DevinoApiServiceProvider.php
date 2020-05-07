@@ -32,6 +32,6 @@ class DevinoApiServiceProvider extends ServiceProvider
             __DIR__.'/../config/devino.php' => config_path('devino.php'),
         ]);
         $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
-        $this->loadMigrationsFrom(__DIR__.'/../database/2020_04_28_174807_create_devino_table.php');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations/2020_04_28_174807_create_devino_table.php');
     }
 }
