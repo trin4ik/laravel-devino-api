@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace Trin4ik\DevinoApi;
 
 use Illuminate\Support\ServiceProvider;
 use NotificationChannels\DevinoApi\DevinoApi;

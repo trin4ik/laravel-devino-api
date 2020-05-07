@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationChannels\DevinoApi;
+namespace Trin4ik\DevinoApi;
 
 use GuzzleHttp\Client as HttpClient;
 use NotificationChannels\DevinoApi\Exceptions\ErrorSendNotification;
