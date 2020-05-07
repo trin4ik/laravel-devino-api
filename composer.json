@@ -1,0 +1,28 @@
+{
+    "name": "trinzotoff/laravel-devino-api",
+    "description": "Send SMS by Devino.API (https://devinotele.com) from Laravel",
+    "authors": [
+        {
+            "name": "trinzotoff",
+            "email": "trin4ik@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2.5",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Trin4ik\\DevinoApi\\": "vendor/trin4ik/laravel-devino-api/src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Trin4ik\\DevinoApi\\DevinoApiServiceProvider"
+            ]
+        }
+    }
+}
