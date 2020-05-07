@@ -1,8 +1,7 @@
 <?php
 
-namespace NotificationChannels\DevinoApi\Exceptions;
+namespace Trin4ik\DevinoApi\Exceptions;
 
-use DomainException;
 use Exception;
 
 class ErrorSendNotification extends Exception

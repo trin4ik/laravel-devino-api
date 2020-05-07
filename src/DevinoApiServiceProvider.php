@@ -3,7 +3,7 @@
 namespace Trin4ik\DevinoApi;
 
 use Illuminate\Support\ServiceProvider;
-use NotificationChannels\DevinoApi\DevinoApi;
+use Trin4ik\DevinoApi\DevinoApi;
 
 class DevinoApiServiceProvider extends ServiceProvider
 {

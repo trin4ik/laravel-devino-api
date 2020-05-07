@@ -3,7 +3,7 @@
 namespace Trin4ik\DevinoApi;
 
 use GuzzleHttp\Client as HttpClient;
-use NotificationChannels\DevinoApi\Exceptions\ErrorSendNotification;
+use Trin4ik\DevinoApi\Exceptions\ErrorSendNotification;
 
 class DevinoApi
 {
