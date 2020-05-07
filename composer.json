@@ -1,6 +1,7 @@
 {
     "name": "trinzotoff/laravel-devino-api",
     "description": "Send SMS by Devino.API (https://devinotele.com) from Laravel",
+    "license": "MIT",
     "authors": [
         {
             "name": "trinzotoff",
@@ -14,7 +15,6 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
             "Trin4ik\\DevinoApi\\": "vendor/trin4ik/laravel-devino-api/src/"
         }
     },
