@@ -4,6 +4,7 @@ namespace Trin4ik\DevinoApi;
 
 use GuzzleHttp\Client as HttpClient;
 use Trin4ik\DevinoApi\Exceptions\ErrorSendNotification;
+use Illuminate\Support\Facades\DB;
 
 class DevinoApi
 {
@@ -44,18 +45,29 @@ class DevinoApi
             'SourceAddress'         => !empty($params['sender']) ? $params['sender'] : $this->sender,
             'DestinationAddress'    => $params['to'],
             'Data'                  => $params['text'],
-            'Validity'              => !empty($params['validity']) ? $params['validity'] : $this->sender,
         ];
 
         try {
-            $response = $this->client->request('POST', $this->url, ['body' => $post, 'headers' => $headers]);
-            $body = $response->getBody();
-            $response = \json_decode((string) $response->getBody(), true);
+            $response = $this->client->request('POST', $this->url, ['json' => $post, 'headers' => $headers]);
+            $body = \json_decode((string) $response->getBody(), true);
 
-            if ($response['result'][0]['code'] !== 'OK') {
+            if ($response->getStatusCode() !== 200) {
                 throw ErrorSendNotification::responseError($body);
             }
-            return $response;
+
+            DB::table('sms_devino')->insert(
+                array(
+                    'from'          =>   !empty($params['sender']) ? $params['sender'] : $this->sender,
+                    'to'            =>   $params['to'],
+                    'message'       =>   addslashes($params['text']),
+                    'status'        =>   'new',
+                    'extra'         =>   json_encode(['devino_id'=>$body[0]]),
+                    'created_at'    =>   date('Y-m-d H:i:s')
+                )
+            );
+
+
+            return $body;
         } catch (\Exception $exception) {
             throw ErrorSendNotification::connectError($exception);
         }
