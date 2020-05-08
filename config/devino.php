@@ -45,7 +45,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'url' => env('DEVINO_URL', 'https://api.devino.online'),
+    'url' => env('DEVINO_URL', 'https://integrationapi.net/rest/v2/Sms/Send'),
 
     /*
     |--------------------------------------------------------------------------
@@ -76,8 +76,8 @@ return [
     | Значение по умолчанию 0.
     |
     */
-
-    'priority' => env('DEVINO_PRIORITY', 0),
+/*
+    'priority' => env('DEVINO_PRIORITY', 0),*/
 
     /*
     |--------------------------------------------------------------------------
@@ -89,7 +89,7 @@ return [
     | данный параметр на приемлимый.
     |
     */
-
-    'callback_url' => env('DEVINO_CALLBACK_URL', '_devinoapi/_callback'),
+/*
+    'callback_url' => env('DEVINO_CALLBACK_URL', '_devinoapi/_callback'),*/
 
 ];

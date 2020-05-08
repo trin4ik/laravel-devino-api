@@ -37,19 +37,18 @@ class DevinoApi
         $headers = [
             'Content-Type'  => 'application/json',
             'Accept'        => 'application/json',
-            'Authorization' => 'Basic ' . \base64_encode($this->login . ':' . $this->password)
         ];
         $post = [
-            'from'          => $params['sender'] ? $params['sender'] : $this->sender,
-            'to'            => $params['to'],
-            'text'          => $params['text'],
-            'validity'      => $params['validity'] ? $params['validity'] : $this->sender,
-            'priority'      => $params['priority'] ? $params['priority'] : $this->sender,
-            'callbackUrl'   => $this->callbackUrl,
+            'Login'                 => $this->login,
+            'Password'              => $this->password,
+            'SourceAddress'         => !empty($params['sender']) ? $params['sender'] : $this->sender,
+            'DestinationAddress'    => $params['to'],
+            'Data'                  => $params['text'],
+            'Validity'              => !empty($params['validity']) ? $params['validity'] : $this->sender,
         ];
 
         try {
-            $response = $this->client->request('POST', $this->url, $headers, ['messages' => [$post]]);
+            $response = $this->client->request('POST', $this->url, ['body' => $post, 'headers' => $headers]);
             $body = $response->getBody();
             $response = \json_decode((string) $response->getBody(), true);
 
