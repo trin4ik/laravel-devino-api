@@ -15,11 +15,12 @@ class CreateDevinoTable extends Migration
     {
         Schema::create('sms_devino', function (Blueprint $table) {
             $table->id();
+            $table->string('devino_id');
             $table->char('from', 11)->default('');
             $table->char('to', 11)->index()->default(0);
             $table->text('message')->default('');
             $table->enum('status', ['new', 'scheduled', 'enroute', 'sent', 'delivered', 'expired', 'undeliverable', 'rejected', 'deleted', 'unknown'])->default('new');
-            $table->json('extra');
+            $table->json('log');
             $table->timestamps();
         });
     }

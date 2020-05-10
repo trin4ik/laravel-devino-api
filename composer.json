@@ -22,7 +22,10 @@
         "laravel": {
             "providers": [
                 "Trin4ik\\DevinoApi\\DevinoApiServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "SMS": "Trin4ik\\DevinoApi\\Facades\\DevinoApi"
+            }
         }
     }
 }

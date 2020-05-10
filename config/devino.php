@@ -45,7 +45,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'url' => env('DEVINO_URL', 'https://integrationapi.net/rest/v2/Sms/Send'),
+    'url' => env('DEVINO_URL', 'https://integrationapi.net/rest/v2/Sms'),
 
     /*
     |--------------------------------------------------------------------------
