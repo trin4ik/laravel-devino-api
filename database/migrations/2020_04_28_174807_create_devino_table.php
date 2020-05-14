@@ -18,7 +18,7 @@ class CreateDevinoTable extends Migration
             $table->string('devino_id');
             $table->char('from', 11)->default('');
             $table->char('to', 11)->index()->default(0);
-            $table->text('message')->default('');
+            $table->text('message');
             $table->enum('status', ['new', 'scheduled', 'enroute', 'sent', 'delivered', 'expired', 'undeliverable', 'rejected', 'deleted', 'unknown'])->default('new');
             $table->json('log');
             $table->timestamps();
