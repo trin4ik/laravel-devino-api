@@ -1,31 +1,31 @@
 {
-    "name": "trin4ik/laravel-devino-api",
-    "description": "Send SMS by Devino.API (https://devinotele.com) from Laravel",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "trin4ik",
-            "email": "trin4ik@gmail.com"
-        }
-    ],
-    "require": {
-        "php": "^7.4| ^8",
-        "guzzlehttp/guzzle": "^7.2"
-    },
-    "minimum-stability": "dev",
-    "autoload": {
-        "psr-4": {
-            "Trin4ik\\DevinoApi\\": "src"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Trin4ik\\DevinoApi\\DevinoApiServiceProvider"
-            ],
-            "aliases": {
-                "SMS": "Trin4ik\\DevinoApi\\Facades\\DevinoApi"
-            }
-        }
+  "name": "trin4ik/laravel-devino-api",
+  "description": "Send SMS by Devino.API (https://devinotele.com) from Laravel",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "trin4ik",
+      "email": "trin4ik@gmail.com"
     }
+  ],
+  "require": {
+    "php": "^8.1",
+    "guzzlehttp/guzzle": "^7.2"
+  },
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Trin4ik\\DevinoApi\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Trin4ik\\DevinoApi\\DevinoApiServiceProvider"
+      ],
+      "aliases": {
+        "SMS": "Trin4ik\\DevinoApi\\Facades\\DevinoApi"
+      }
+    }
+  }
 }

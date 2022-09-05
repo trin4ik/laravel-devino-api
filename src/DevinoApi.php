@@ -2,152 +2,128 @@
 
 namespace Trin4ik\DevinoApi;
 
-use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Client;
+use Trin4ik\DevinoApi\Enums\DevinoNotificationStatus;
+use Trin4ik\DevinoApi\Exceptions\DevinoResponseException;
+use Trin4ik\DevinoApi\Exceptions\DevinoConnectingException;
+use Trin4ik\DevinoApi\Exceptions\DevinoSendException;
+use Trin4ik\DevinoApi\Exceptions\DevinoUnknownStatusException;
+use Trin4ik\DevinoApi\Exceptions\DevinoWrongParamsException;
 use Trin4ik\DevinoApi\Exceptions\ErrorSendNotification;
 use Illuminate\Support\Facades\DB;
-use Trin4ik\DevinoApi\Models\DevinoItem;
+use Trin4ik\DevinoApi\Models\DevinoNotification;
 
 class DevinoApi
 {
-    protected $client;
-    protected $url;
-    protected $login;
-    protected $password;
-    protected $sender;
-    protected $validity;
-    protected $priority;
-    protected $callbackUrl;
+	protected $client;
+	protected $url;
+	protected $login;
+	protected $password;
+	protected $sender;
+	protected $validity;
 
-    public function __construct()
-    {
-        $this->login = config('devino.auth_plain.login');
-        $this->password = config('devino.auth_plain.password');
-        $this->sender = config('devino.sender');
-        $this->url = config('devino.url');
-        $this->validity = config('devino.validity');
-        $this->priority = config('devino.priority');
-        $this->callbackUrl = config('devino.callback_url');
+	public function __construct () {
+		$this->login = config('devino.auth_plain.login');
+		$this->password = config('devino.auth_plain.password');
+		$this->sender = config('devino.sender');
+		$this->url = config('devino.url');
+		$this->validity = config('devino.validity');
 
-        $this->client = new HttpClient([
-            'timeout' => 5,
-            'connect_timeout' => 5,
-        ]);
-    }
+		$this->client = new Client([
+			'timeout'         => 10,
+			'connect_timeout' => 10,
+		]);
+	}
 
-    public function send($params)
-    {
-        $headers = [
-            'Content-Type'  => 'application/json',
-            'Accept'        => 'application/json',
-        ];
-        $param = [
-            'Login'                 => $this->login,
-            'Password'              => $this->password,
-            'SourceAddress'         => !empty($params['sender']) ? $params['sender'] : $this->sender,
-            'DestinationAddress'    => $params['to'],
-            'Data'                  => $params['text'],
-        ];
+	protected function headers (): array {
+		return [
+			'Content-Type' => 'application/json',
+			'Accept'       => 'application/json'
+		];
+	}
 
-        try {
-            $response = $this->client->request('POST', $this->url . '/Send', ['json' => $param, 'headers' => $headers]);
-            $body = \json_decode((string) $response->getBody(), true);
+	public function send (array $params): array {
+		$params['sender'] = $params['sender'] ?? $this->sender;
 
-            $sms = new DevinoItem([
-                'devino_id'     =>   $body[0],
-                'from'          =>   !empty($params['sender']) ? $params['sender'] : $this->sender,
-                'to'            =>   $params['to'],
-                'message'       =>   addslashes($params['text'])
-            ]);
-            $sms->save();
+		if (empty($params['sender']) || empty($params['to']) || empty($params['message'])) {
+			throw new DevinoWrongParamsException($params);
+		}
 
-        } catch (\DomainException $e) {
-            throw ErrorSendNotification::connectError($e);
-        } catch (\Exception $e) {
-            throw ErrorSendNotification::responseSendError($e);
-        }
-    }
+		$json = [
+			'Login'              => $this->login,
+			'Password'           => $this->password,
+			'SourceAddress'      => $params['sender'],
+			'DestinationAddress' => $params['to'],
+			'Data'               => $params['message'],
+		];
 
-    public function check (DevinoItem $sms) {
-        $headers = [
-            'Content-Type'  => 'application/json',
-            'Accept'        => 'application/json',
-        ];
-        $param = [
-            'Login'                 => $this->login,
-            'Password'              => $this->password,
-            'messageId'             => $sms->devino_id
-        ];
+		try {
+			$response = $this->query(
+				method: 'POST',
+				url: '/Send',
+				request: [
+					'json'    => $json,
+					'headers' => $this->headers()
+				]
+			);
 
-        try {
-            $response = $this->client->request('GET', $this->url . '/State', ['query' => $param, 'headers' => $headers]);
-            $body = json_decode($response->getBody(), true);
+			if (!isset($response[0])) {
+				throw new DevinoResponseException($response);
+			}
 
-            $status = false;
-            switch ($body['State']) {
-                case -1: { // sent
-                    $status = 'sent';
-                    break;
-                }
-                case -2: { // scheduled
-                    $status = 'scheduled';
-                    break;
-                }
-                case -98:
-                case 47: { // deleted
-                    $status = 'deleted';
-                    break;
-                }
+			return $response;
+		} catch (\Exception $e) {
+			throw new $e;
+		}
+	}
 
-                case 0: { // delivered
-                    $status = 'delivered';
-                    break;
-                }
+	public function check (DevinoNotification $sms): DevinoNotificationStatus {
+		$query = [
+			'Login'     => $this->login,
+			'Password'  => $this->password,
+			'messageId' => $sms->devino_id
+		];
 
-                case 11:
-                case 41:
-                case 10: { // undeliverable
-                    $status = 'undeliverable';
-                    break;
-                }
-                case 48:
-                case 69:
-                case 42: { // rejected
-                    $status = 'rejected';
-                    break;
-                }
-                case 46: { // expired
-                    $status = 'expired';
-                    break;
-                }
-                case 99: { // unknown
-                    $status = 'unknown';
-                    break;
-                }
-                case 255: { // new
-                    $status = 'new';
-                    break;
-                }
-            }
+		try {
+			$response = $this->query(
+				url: '/State',
+				request: [
+					'query'   => $query,
+					'headers' => $this->headers()
+				]
+			);
 
-            if ($status) {
-                if ($sms->status !== $status) {
-                    $sms->status = $status;
-                    $tmp = $sms->log;
-                    $tmp[] = ['date' => time(), 'type'=> 'status', 'data' => (string) $response->getBody()];
-                    $sms->log = $tmp;
-                    $sms->save();
-                    return ['success' => true, 'data' => $status];
-                } else {
-                    return ['success' => true, 'data' => 'same status'];
-                }
-            } else {
-                throw new \Exception("unknown status: " . $response->getBody());
-            }
-        } catch (\DomainException $e) {
-            return ['success' => false, 'data' => 'domain connect'];
-        } catch (\Exception $e) {
-            return ['success' => false, 'data' => $e->getMessage() . ': '. $e->getLine()];
-        }
+			if (!isset($response['State'])) {
+				throw new DevinoResponseException($response);
+			}
 
-    }
+			return DevinoNotificationStatus::fromResponse($response['State']);
+		} catch (\Exception $e) {
+			throw new $e;
+		}
+	}
+
+	public function log (DevinoNotification $sms, mixed $log, string $type = 'status'): void {
+		$sms->log = [...$sms->log, [
+			'date' => time(),
+			'type' => $type,
+			'data' => $log
+		]];
+		$sms->save();
+	}
+
+	protected function query (
+		string $method = 'GET',
+		string $url = '',
+		array  $request = []
+	): array {
+		try {
+			$response = $this->client->request($method, $this->url . $url, $request);
+			return $response->json();
+		} catch (\DomainException $e) {
+			throw new DevinoConnectingException($e);
+		} catch (\Exception $e) {
+			throw new DevinoResponseException($e);
+		}
+	}
 }
