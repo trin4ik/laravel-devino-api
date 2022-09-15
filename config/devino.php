@@ -4,8 +4,8 @@
 
 return [
 	'auth_plain' => [
-		'login'    => env('DEVINO_LOGIN'),
-		'password' => env('DEVINO_PASSWORD'),
+		'login'    => env('DEVINO_LOGIN', ''),
+		'password' => env('DEVINO_PASSWORD', ''),
 	],
 	'sender'     => env('DEVINO_SENDER', ''),
 	'url'        => env('DEVINO_URL', 'https://integrationapi.net/rest/v2/Sms'),

@@ -9,8 +9,8 @@ use Trin4ik\DevinoApi\Models\DevinoNotification;
 
 class CheckStatus extends Command
 {
-	protected string $signature = 'devino:check';
-	protected string $description = 'Check sms status';
+	protected $signature = 'devino:check';
+	protected $description = 'Check sms status';
 
 	public function handle () {
 		$check_status = ['new', 'scheduled', 'enroute', 'sent'];

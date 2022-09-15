@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d4d284fd-7e71-4d23-99d0-b014ae5ab8a8" name="smartik">
+        <fileTransfer accessType="SFTP" host="77.223.98.223" port="22" sshConfigId="e4ffa138-dc60-4f69-87ea-6e81e56993d5" sshConfig="dev@77.223.98.223:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

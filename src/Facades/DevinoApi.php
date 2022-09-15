@@ -4,9 +4,9 @@ namespace Trin4ik\DevinoApi\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Devino extends Facade
+class DevinoApi extends Facade
 {
 	protected static function getFacadeAccessor () {
-		return 'devino';
+		return 'sms';
 	}
 }

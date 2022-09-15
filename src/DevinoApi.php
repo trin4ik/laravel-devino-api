@@ -77,11 +77,11 @@ class DevinoApi
 		}
 	}
 
-	public function check (DevinoNotification $sms): DevinoNotificationStatus {
+	public function check (DevinoNotification|string $sms): DevinoNotificationStatus {
 		$query = [
 			'Login'     => $this->login,
 			'Password'  => $this->password,
-			'messageId' => $sms->devino_id
+			'messageId' => is_string($sms) ? $sms : $sms->devino_id
 		];
 
 		try {
@@ -119,7 +119,7 @@ class DevinoApi
 	): array {
 		try {
 			$response = $this->client->request($method, $this->url . $url, $request);
-			return $response->json();
+			return json_decode((string)$response->getBody(), true);
 		} catch (\DomainException $e) {
 			throw new DevinoConnectingException($e);
 		} catch (\Exception $e) {

@@ -14,6 +14,10 @@ enum DevinoNotificationStatus: string
 	case Unknown = 'unknown';
 	case New = 'new';
 
+	public static function values (): array {
+		return array_column(self::cases(), 'value');
+	}
+
 	public static function fromResponse (int $status = 99): DevinoNotificationStatus {
 		return match ($status) {
 			-1         => DevinoNotificationStatus::Sent,
