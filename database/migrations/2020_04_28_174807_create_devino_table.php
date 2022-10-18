@@ -20,7 +20,7 @@ class CreateDevinoTable extends Migration
 			$table->string('sender')->nullable()->index();
 			$table->char('to', 11)->nullable()->index();
 			$table->text('message')->nullable();
-			$table->enum('status', DevinoNotificationStatus::cases())->default('new');
+			$table->enum('status', DevinoNotificationStatus::values())->default('new');
 			$table->json('log')->nullable();
 			$table->timestamps();
 		});
